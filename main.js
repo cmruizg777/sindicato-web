@@ -1752,27 +1752,29 @@ class TurneroComponent {
         }
     }
     enviar() {
-        const formData = new FormData();
-        formData.append('_fecha', this.fecha);
-        formData.append('_cedula', this.cedula);
-        formData.append('_nombre', this.nombre);
-        formData.append('_apellido', this.apellido);
-        formData.append('_email', this.email);
-        formData.append('_dirección', this.direccion);
-        formData.append('_fpago', this.formaPago);
-        if (this.formaPago == 'TB') {
-            if (this.comprobante) {
-                formData.append('_comprobante', this.comprobante, this.comprobante.name);
+        if (this.validarDatos() == 8) {
+            const formData = new FormData();
+            formData.append('_fecha', this.fecha);
+            formData.append('_cedula', this.cedula);
+            formData.append('_nombre', this.nombre);
+            formData.append('_apellido', this.apellido);
+            formData.append('_email', this.email);
+            formData.append('_dirección', this.direccion);
+            formData.append('_fpago', this.formaPago);
+            if (this.formaPago == 'TB') {
+                if (this.comprobante) {
+                    formData.append('_comprobante', this.comprobante, this.comprobante.name);
+                }
+                else {
+                    alert('Es necesario que cargue su comprobante de pago');
+                }
             }
-            else {
-                alert('Es necesario que cargue su comprobante de pago');
-            }
+            this.turnosService.postFile(this.comprobante).subscribe(data => {
+                console.log(data);
+            }, error => {
+                console.log(error);
+            });
         }
-        this.turnosService.postFile(this.comprobante).subscribe(data => {
-            console.log(data);
-        }, error => {
-            console.log(error);
-        });
     }
     handleFileInput(files) {
         this.comprobante = files.item(0);
